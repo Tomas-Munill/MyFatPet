@@ -26,7 +26,7 @@ app.use(middleware.tokenExtractor);
 
 app.use('/api/login', loginRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/meals', mealsRouter);
+app.use('/api/meals', middleware.userExtractor, mealsRouter);
 app.use('/api/pets', middleware.userExtractor, petsRouter);
 
 app.use(middleware.unknownEndpoint);

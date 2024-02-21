@@ -1,5 +1,6 @@
 const mealsRouter = require('express').Router();
 require('express-async-errors'); // permite eliminar los try-catch
+
 const Meal = require('../models/meal');
 const Pet = require('../models/pet');
 
@@ -26,7 +27,7 @@ mealsRouter.post('/', async (request, response) => {
     return response.status(400).json({ error: 'portionQuantity missing' });
   }
 
-  // find pet to save the new food in its food array
+  // buscar mascota para guardar la nueva comida en su array de comidas
   const pet = await Pet.findById(body.pet);
   if (!pet) {
     return response.status(400).json({ error: 'pet not found' });
@@ -41,9 +42,36 @@ mealsRouter.post('/', async (request, response) => {
   });
 
   const savedMeal = await meal.save();
+
+  // guardar la nueva comida el array de comidas de la mascota
   pet.meals = pet.meals.concat(meal._id);
   await pet.save();
+
   response.status(201).json(savedMeal);
+});
+
+mealsRouter.delete('/:id', async (request, response) => {
+  const tokenUser = request.user;
+  const id = request.params.id;
+  if (id.length !== 24) {
+    return response.status(400).json({ error: 'malformed id' });
+  }
+  const meal = await Meal.findById(id);
+  if (!meal) {
+    return response.status(404).json({ error: 'meal not found' });
+  }
+  if (meal.user.toString() !== tokenUser.id) {
+    return response.status(401).json({ error: 'cannot delete a resource created by another user' });
+  }
+
+  // eliminar la comida en el array de comidas de la mascota
+  await Pet.updateOne(
+    { _id: meal.pet },
+    { $pull: { meals: meal._id } }
+  );
+
+  await meal.deleteOne();
+  response.status(204).end();  
 });
 
 module.exports = mealsRouter;

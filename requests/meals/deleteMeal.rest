@@ -1,3 +1,2 @@
-GET http://localhost:3003/api/meals
-Content-Type: application/json
+DELETE http://localhost:3003/api/meals/65d665fe99f6975a21d73bd4
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2NWQzYzE4ZWU1YzExYTE4MzQ4YTRkOWIiLCJpYXQiOjE3MDg0NTkxMjZ9.trv2VORJLkLgnid13iXgt0wtQxqgRLmqfyvoMMZhN4U

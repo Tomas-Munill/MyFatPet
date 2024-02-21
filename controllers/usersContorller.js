@@ -1,7 +1,9 @@
 const usersRouter = require('express').Router();
 const bcryptjs = require('bcryptjs');
-const User = require('../models/user');
 require('express-async-errors');
+
+const User = require('../models/user');
+const middleware = require('../utils/middleware');
 
 usersRouter.post('/', async (request, response) => {
   const body = request.body;
@@ -27,7 +29,7 @@ usersRouter.post('/', async (request, response) => {
   response.status(201).json(savedUser);
 });
 
-usersRouter.get('/', async (request, response) => {
+usersRouter.get('/', middleware.userExtractor, async (request, response) => {
   const users = await User.find({});
   response.status(200).json(users);
 });
