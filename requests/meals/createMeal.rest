@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/meals
+Content-Type: application/json
+
+{
+  "pet": "65d5022c69ce06139751455a",
+  "user": "65d3c18ee5c11a18348a4d9b",
+  "portionUnit": "cucharada",
+  "portionQuantity": 3
+}
