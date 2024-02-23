@@ -21,9 +21,16 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(uniqueValidator);
 
 userSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
+  transform: (document, returnedObject, options) => {
+    if (options && options.populate) {
+      // Incluir _id solo si es una operación de población
+      returnedObject._id = document._id.toString();
+    } else {
+      // Excluir _id en otras operaciones
+      delete returnedObject._id;
+    }
+    // Agregar id en todas las operaciones
+    returnedObject.id = document._id.toString();
     delete returnedObject.__v;
     delete returnedObject.passwordHash;
   },

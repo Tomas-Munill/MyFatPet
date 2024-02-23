@@ -11,6 +11,29 @@ petsRouter.get('/', async (request, response) => {
   response.json(pets);
 });
 
+petsRouter.get('/todays-meals', async (request, response) => {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const pets = await Pet.find({})
+    .populate({
+      path: 'meals',
+      match: {
+        dateTime: { $gte: startOfDay, $lte: endOfDay },
+      },
+      select: 'dateTime portionUnit portionQuantity user',
+      populate: {
+        path: 'user',
+        select: 'username name'
+      }
+    });
+
+  response.json(pets);
+});
+
 petsRouter.post('/', async (request, response) => {
   const body = request.body;
 
